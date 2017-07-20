@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 	"log"
-
 	profile "ss-server/models"
+	cryptoUtil "ss-server/utils"
 )
 
 var Db *sql.DB
@@ -42,6 +42,10 @@ func QueryAllProfile() (profiles []profile.Profile, err error) {
 		rows.Scan(&profile.ID, &profile.Name, &profile.Host, &profile.LocalPort, &profile.RemotePort, &profile.Password, &profile.Method,
 			&profile.Route, &profile.RemoteDNS, &profile.ProxyApps, &profile.Bypass, &profile.Udpdns, &profile.Ipv6, &profile.Individual,
 			&profile.Date, &profile.UserOrder, &profile.Plugin, &profile.Country, &profile.VpnType, &profile.Ikev2Type)
+
+		profile.Host = cryptoUtil.AesEncrypt(profile.Host)
+		profile.Password = cryptoUtil.AesEncrypt(profile.Password)
+		log.Printf("country:%s,vpntype:%d,ikev2Type:%d", profile.Country, profile.VpnType, profile.Ikev2Type)
 		profiles = append(profiles, profile)
 	}
 	err = rows.Err()
@@ -51,4 +55,8 @@ func QueryAllProfile() (profiles []profile.Profile, err error) {
 	//defer 延迟执行即QueryAllProfile方法结束后才执行
 	defer Db.Close()
 	return
+}
+
+func InsertProfile(profile *profile.Profile) {
+
 }
