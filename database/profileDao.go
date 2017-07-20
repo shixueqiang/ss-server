@@ -48,7 +48,7 @@ func QueryAllProfile() (profiles []profile.Profile, err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//defer 延迟执行即main方法结束后才执行
+	//defer 延迟执行即QueryAllProfile方法结束后才执行
 	defer Db.Close()
 	return
 }
