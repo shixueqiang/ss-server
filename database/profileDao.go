@@ -12,8 +12,8 @@ var Db *sql.DB
 func initDB() {
 	var err error
 	//打开数据库
-	//shixq:shixq1207@tcp(www.shixq.com:3306)/ssvpn?charset=utf8
-	Db, err = sql.Open("mysql", "shixq:shixq1207@tcp(www.shixq.com:3306)/ssvpn?charset=utf8")
+	//account:password@tcp(host:3306)/dbname?charset=utf8
+	Db, err = sql.Open("mysql", "account:password@tcp(host:3306)/dbname?charset=utf8")
 	if err != nil {
 		log.Fatalf("Open database error: %s\n", err)
 	}
