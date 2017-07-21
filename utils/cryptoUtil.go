@@ -31,6 +31,12 @@ func AesEncrypt(content string) string {
 }
 
 func AesDecrypt(content string) string {
+	text := make([]byte, len(content))
+	var err error
+	text, err = Base64Decode([]byte(content))
+	if err != nil {
+		log.Fatalln(err)
+	}
 	// 创建加密算法aes
 	c, err := aes.NewCipher([]byte(key))
 	if err != nil {
@@ -38,14 +44,10 @@ func AesDecrypt(content string) string {
 		os.Exit(-1)
 	}
 	// 解密字符串
+	decryptText := make([]byte, len(text))
 	cfbdec := cipher.NewCFBDecrypter(c, commonIV)
-	decryptText := make([]byte, len(content))
-	cfbdec.XORKeyStream(decryptText, []byte(content))
-	fmt.Printf("%x=>%s\n", content, decryptText)
-	decryptText, err = Base64Decode(decryptText)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	cfbdec.XORKeyStream(decryptText, []byte(text))
+	fmt.Printf("%x=>%s\n", text, decryptText)
 	return string(decryptText)
 }
 
