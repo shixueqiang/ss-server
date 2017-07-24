@@ -42,8 +42,8 @@ func QueryAllProfile() (profiles []profile.Profile, err error) {
 		rows.Scan(&profile.ID, &profile.Name, &profile.Host, &profile.LocalPort, &profile.RemotePort, &profile.Password, &profile.Method,
 			&profile.Route, &profile.RemoteDNS, &profile.ProxyApps, &profile.Bypass, &profile.Udpdns, &profile.Ipv6, &profile.Individual,
 			&profile.Date, &profile.UserOrder, &profile.Plugin, &profile.Country, &profile.VpnType, &profile.Ikev2Type)
-		profile.Host = cryptoUtil.AesEncrypt1([]byte(profile.Host))
-		profile.Password = cryptoUtil.AesEncrypt1([]byte(profile.Password))
+		profile.Host = cryptoUtil.AesEncrypt(profile.Host)
+		profile.Password = cryptoUtil.AesEncrypt(profile.Password)
 		profiles = append(profiles, profile)
 	}
 	err = rows.Err()

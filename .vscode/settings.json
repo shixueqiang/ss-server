@@ -12,6 +12,6 @@
     "go.formatOnSave": true,
     "go.formatTool": "goreturns",
     "go.goroot": "D:\\go",
-    "go.gopath": "D:\\go-workspace",
+    "go.gopath": "D:\\workspace\\go-workspace",
     "go.gocodeAutoBuild": false
 }
