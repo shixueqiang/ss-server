@@ -32,7 +32,8 @@ module.exports = {
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
-  entry: [
+  entry: {
+    index:[
     // Include an alternative client for WebpackDevServer. A client's job is to
     // connect to WebpackDevServer by a socket and get notified about changes.
     // When you save a file, the client will either apply hot updates (in case
@@ -53,7 +54,20 @@ module.exports = {
     // We include the app code last so that if there is a runtime error during
     // initialization, it doesn't blow up the WebpackDevServer client, and
     // changing JS code would still trigger a refresh.
-  ],
+    ],
+    profile:[
+      require.resolve('react-dev-utils/webpackHotDevClient'),
+      require.resolve('./polyfills'),
+      require.resolve('react-error-overlay'),
+      paths.appProfileJs,
+    ],
+    login:[
+      require.resolve('react-dev-utils/webpackHotDevClient'),
+      require.resolve('./polyfills'),
+      require.resolve('react-error-overlay'),
+      paths.appLoginJs,
+    ]
+  },
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
     path: paths.appBuild,
@@ -62,7 +76,7 @@ module.exports = {
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
-    filename: 'static/js/bundle.js',
+    filename: 'static/js/[name].bundle.js',
     // There are also additional JS chunk files if you use code splitting.
     chunkFilename: 'static/js/[name].chunk.js',
     // This is the URL that app is served from. We use "/" in development.
@@ -223,7 +237,26 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
+      chunks: ["index"],
       template: paths.appHtml,
+    }),
+     new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ["profile"],
+      template: paths.appHtml,
+      filename: 'profile/profile_list.html',
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ["profile"],
+      template: paths.appHtml,
+      filename: 'profile/profile_edit.html',
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ["login"],
+      template: paths.appHtml,
+      filename: 'login.html',
     }),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),

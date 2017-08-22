@@ -56,7 +56,17 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: shouldUseSourceMap ? 'source-map' : false,
   // In production, we only want to load the polyfills and the app code.
-  entry: [require.resolve('./polyfills'), paths.appIndexJs],
+  entry: {
+    index:[require.resolve('./polyfills'), paths.appIndexJs],
+    profile:[
+      require.resolve('./polyfills'),
+      paths.appProfileJs,
+    ],
+    login:[
+      require.resolve('./polyfills'),
+      paths.appLoginJs,
+    ]
+  },
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -238,7 +248,62 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
+      chunks: ["index"],
       template: paths.appHtml,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ["profile"],
+      template: paths.appHtml,
+      filename: 'profile/profile_list.html',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ["profile"],
+      template: paths.appHtml,
+      filename: 'profile/profile_edit.html',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ["login"],
+      template: paths.appHtml,
+      filename: 'login.html',
       minify: {
         removeComments: true,
         collapseWhitespace: true,
