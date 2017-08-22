@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Toggle from 'material-ui/Toggle';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import $ from 'jquery';
 import './profile.css';
 import {
   Table,
@@ -21,22 +22,44 @@ import {
 
 export default class TableExampleControlled extends Component {
   state = {
-    selected: [1],
+    selected: [],
+    data: []
   };
 
   isSelected = (index) => {
+    console.log("isSelected index:" + index);
     return this.state.selected.indexOf(index) !== -1;
   };
 
   handleRowSelection = (selectedRows) => {
+    console.log("selectedRows:" + selectedRows);
     this.setState({
       selected: selectedRows,
     });
   };
 
+  handleResult = (result) => {
+    this.setState({
+      data: result,
+    });
+  };
+
+  componentDidMount() {
+    const _this = this;
+    $.getJSON( "/getAllprofile")
+    .done(function( json ) {
+      console.log( "JSON Data: " + json.profiles[0].Host);
+      _this.handleResult(json.profiles);
+    })
+    .fail(function( jqxhr, textStatus, error ) {
+      var err = textStatus + ", " + error;
+      console.log( "Request Failed: " + err );
+    });
+  }
+
   render() {
     return (
-      <Table onRowSelection={this.handleRowSelection}>
+      <Table onRowSelection={this.handleRowSelection} multiSelectable={true}>
         <TableHeader>
           <TableRow>
             <TableHeaderColumn>ID</TableHeaderColumn>
@@ -45,26 +68,12 @@ export default class TableExampleControlled extends Component {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow selected={this.isSelected(0)}>
-            <TableRowColumn>1</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-            <TableRowColumn>Employed</TableRowColumn>
-          </TableRow>
-          <TableRow selected={this.isSelected(1)}>
-            <TableRowColumn>2</TableRowColumn>
-            <TableRowColumn>Randal White</TableRowColumn>
-            <TableRowColumn>Unemployed</TableRowColumn>
-          </TableRow>
-          <TableRow selected={this.isSelected(2)}>
-            <TableRowColumn>3</TableRowColumn>
-            <TableRowColumn>Stephanie Sanders</TableRowColumn>
-            <TableRowColumn>Employed</TableRowColumn>
-          </TableRow>
-          <TableRow selected={this.isSelected(3)}>
-            <TableRowColumn>4</TableRowColumn>
-            <TableRowColumn>Steve Brown</TableRowColumn>
-            <TableRowColumn>Employed</TableRowColumn>
-          </TableRow>
+          {this.state.data.map((item, index) => 
+          <TableRow selected={this.isSelected(index)}>
+            <TableRowColumn>{item.ID}</TableRowColumn>
+            <TableRowColumn>{item.Host}</TableRowColumn>
+            <TableRowColumn>{item.Method}</TableRowColumn>
+          </TableRow>)}
         </TableBody>
       </Table>
     );
@@ -127,7 +136,7 @@ class Login extends Component {
             iconElementRight={this.state.logged ? <Logged /> : <Login />}
             className="nav"
           />
-          <TableExampleControlled />
+          <TableExampleControlled source="/getAllprofile"/>
         </div>
       );
     }
