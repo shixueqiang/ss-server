@@ -6,7 +6,7 @@
 debug
 /.vscode/settings.json
 /.vscode/launch.json
-
+config.yaml
 # Test binary, build with `go test -c`
 *.test
 
