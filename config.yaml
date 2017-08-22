@@ -1,0 +1,5 @@
+# db_url:shixq:shixq1207@tcp(www.shixq.com:3306)/ssvpn?charset=utf8
+db_username: shixq
+db_password: shixq1207
+db_host: www.shixq.com
+db_name: ssvpn
