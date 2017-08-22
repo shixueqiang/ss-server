@@ -10,7 +10,8 @@ import (
 func initRouter() *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/getAllprofile", profileApi.GetAllProfileAPI)
+	router.GET("/getAllprofile", profileApi.GetAllProfileAPICrypto)
+	router.GET("/getAllprofileNotCrypto", profileApi.GetAllProfileAPINotCrypto)
 	router.Static("/static", "./app/build/static")
 	router.StaticFile("/favicon.ico", "./app/build/favicon.ico")
 	router.StaticFile("/manifest.json", "./app/build/manifest.json")

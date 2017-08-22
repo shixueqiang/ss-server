@@ -46,7 +46,7 @@ export default class TableExampleControlled extends Component {
 
   componentDidMount() {
     const _this = this;
-    $.getJSON( "/getAllprofile")
+    $.getJSON( "/getAllprofileNotCrypto")
     .done(function( json ) {
       console.log( "JSON Data: " + json.profiles[0].Host);
       _this.handleResult(json.profiles);
@@ -63,8 +63,10 @@ export default class TableExampleControlled extends Component {
         <TableHeader>
           <TableRow>
             <TableHeaderColumn>ID</TableHeaderColumn>
-            <TableHeaderColumn>Name</TableHeaderColumn>
-            <TableHeaderColumn>Status</TableHeaderColumn>
+            <TableHeaderColumn>Host</TableHeaderColumn>
+            <TableHeaderColumn>Method</TableHeaderColumn>
+            <TableHeaderColumn>Protocol</TableHeaderColumn>
+            <TableHeaderColumn>Obfs</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -73,6 +75,8 @@ export default class TableExampleControlled extends Component {
             <TableRowColumn>{item.ID}</TableRowColumn>
             <TableRowColumn>{item.Host}</TableRowColumn>
             <TableRowColumn>{item.Method}</TableRowColumn>
+            <TableRowColumn>{item.Protocol}</TableRowColumn>
+            <TableRowColumn>{item.Obfs}</TableRowColumn>
           </TableRow>)}
         </TableBody>
       </Table>
@@ -88,58 +92,51 @@ class Login extends Component {
         <FlatButton {...this.props} label="Login" />
       );
     }
-  }
+}
   
-  const Logged = (props) => (
-    <IconMenu
-      {...props}
-      iconButtonElement={
-        <IconButton><MoreVertIcon /></IconButton>
-      }
-      targetOrigin={{horizontal: 'right', vertical: 'top'}}
-      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-    >
-      <MenuItem primaryText="Refresh" />
-      <MenuItem primaryText="Help" />
-      <MenuItem primaryText="Sign out" />
-    </IconMenu>
-  );
+const Logged = (props) => (
+  <IconMenu
+    {...props}
+    iconButtonElement={
+      <IconButton><MoreVertIcon /></IconButton>
+    }
+    targetOrigin={{horizontal: 'right', vertical: 'top'}}
+    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+  >
+    <MenuItem primaryText="Edit" />
+    <MenuItem primaryText="Remove" />
+    <MenuItem primaryText="Sign out" />
+  </IconMenu>
+);
   
-  Logged.muiName = 'IconMenu';
+Logged.muiName = 'IconMenu';
   
   /**
    * This example is taking advantage of the composability of the `AppBar`
    * to render different components depending on the application state.
    */
-  class AppBarExampleComposition extends Component {
-    state = {
-      logged: true,
-    };
-  
-    handleChange = (event, logged) => {
-      this.setState({logged: logged});
-    };
-  
-    render() {
-      return (
-        <div>
-          <Toggle
-            label="Logged"
-            defaultToggled={true}
-            onToggle={this.handleChange}
-            labelPosition="right"
-            style={{margin: 20}}
-          />
-          <AppBar
-            title="Title"
-            iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-            iconElementRight={this.state.logged ? <Logged /> : <Login />}
-            className="nav"
-          />
-          <TableExampleControlled source="/getAllprofile"/>
-        </div>
-      );
-    }
+class AppBarExampleComposition extends Component {
+  state = {
+    logged: true,
+  };
+
+  handleChange = (event, logged) => {
+    this.setState({logged: logged});
+  };
+
+  render() {
+    return (
+      <div>
+        <AppBar
+          title="Title"
+          iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+          iconElementRight={this.state.logged ? <Logged /> : <Login />}
+          className="nav"
+        />
+        <TableExampleControlled/>
+      </div>
+    );
   }
+}
 
 ReactDOM.render(<MuiThemeProvider><AppBarExampleComposition /></MuiThemeProvider>, document.getElementById('root'));

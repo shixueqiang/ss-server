@@ -8,8 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAllProfileAPI(c *gin.Context) {
-	profiles, err := profileDao.QueryAllProfile()
+func GetAllProfileAPICrypto(c *gin.Context) {
+	profiles, err := profileDao.QueryAllProfile(true)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"profiles": profiles,
+	})
+}
+
+func GetAllProfileAPINotCrypto(c *gin.Context) {
+	profiles, err := profileDao.QueryAllProfile(false)
 	if err != nil {
 		log.Fatalln(err)
 	}
