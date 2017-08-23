@@ -24,7 +24,9 @@ func GetAllProfileAPINotCrypto(c *gin.Context) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "*")
+	c.Header("Access-Control-Allow-Headers", "x-requested-with,content-type")
 	c.JSON(http.StatusOK, gin.H{
 		"profiles": profiles,
 	})

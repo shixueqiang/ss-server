@@ -16,18 +16,16 @@ func initRouter() *gin.Engine {
 	router.StaticFile("/favicon.ico", "./app/build/favicon.ico")
 	router.StaticFile("/manifest.json", "./app/build/manifest.json")
 	// router.LoadHTMLGlob("app/build/*/*.html")
-	router.LoadHTMLFiles("app/build/index.html", "app/build/login.html", "app/build/profile/profile_list.html", "app/build/profile/profile_edit.html")
+	router.LoadHTMLFiles("app/build/index.html", "app/build/login.html", "app/build/profile/profiles.html")
 	router.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 	router.GET("/login", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.html", nil)
 	})
-	router.GET("/profileList", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "profile_list.html", nil)
-	})
-	router.GET("/profileEdit", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "profile_edit.html", nil)
+	//profile相关的做react单页面应用
+	router.GET("/profiles", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "profiles.html", nil)
 	})
 	return router
 }

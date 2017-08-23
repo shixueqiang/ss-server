@@ -244,13 +244,7 @@ module.exports = {
       inject: true,
       chunks: ["profile"],
       template: paths.appHtml,
-      filename: 'profile/profile_list.html',
-    }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ["profile"],
-      template: paths.appHtml,
-      filename: 'profile/profile_edit.html',
+      filename: 'profile/profiles.html',
     }),
     new HtmlWebpackPlugin({
       inject: true,
