@@ -8,6 +8,7 @@ import App from '../App';
 const ProfileIndex = () => (
     <BrowserRouter>
     <div>
+        {/* <Route path="/" render={() => <ProfileList />}/> */}
         <Route path="/profiles" render={() => <ProfileList />}/>
         <Route path="/profileEdit" render={() => <ProfileEdit />} />
       </div>

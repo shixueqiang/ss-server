@@ -127,10 +127,19 @@ Logged.muiName = 'IconMenu';
 class ProfileList extends Component {
   state = {
     logged: true,
+    data: [],
   };
 
   handleChange = (event, logged) => {
     this.setState({logged: logged});
+  };
+
+  editProfile = () => {
+
+  };
+
+  updateData = (profiles) => {
+      console.log(profiles.length);
   };
 
   render() {
@@ -140,10 +149,10 @@ class ProfileList extends Component {
             <AppBar
             title="VPN PROFILE"
             iconElementLeft={<IconButton><NavigationClose/></IconButton>}
-            iconElementRight={this.state.logged ? <Logged /> : <Login />}
+            iconElementRight={this.state.logged ? <Logged callback={this.editProfile}/> : <Login />}
             className="nav"/>
         </MuiThemeProvider>
-        <ExampleTable />  
+        <ExampleTable callback={this.updateData}/>  
       </div>
     );
   }
@@ -178,7 +187,6 @@ class ExampleTable extends React.Component {
     $.getJSON( "http://127.0.0.1:8055/getAllprofileNotCrypto")
     .done(function( json ) {
       console.log( "JSON Data: " + json.profiles[0].Host);
-      // _this.data = json.profiles;
       _this.setState({data: json.profiles,});
     })
     .fail(function( jqxhr, textStatus, error ) {
@@ -190,6 +198,11 @@ class ExampleTable extends React.Component {
   onSelectChange = (selectedRowKeys) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
+    var array = new Array();
+    for(var i in selectedRowKeys) {
+        array.push(this.state.data[i]);
+    }
+    this.props.callback(array);
   }
   render() {
     const { loading, selectedRowKeys } = this.state;
