@@ -77,7 +77,8 @@ module.exports = function(proxy, allowedHost) {
       disableDotRule: true,
       rewrites: [
         { from: /^\/login.html/, to: '/build/login.html' },
-        { from: /^\/profiles.html/, to: '/build/profile/profiles.html' },
+        { from: /^\/profiles/, to: '/build/profile/profiles.html' },
+        { from: /^\/profileEdit/, to: '/build/profile/profiles.html' },
       ]
     },
     public: allowedHost,

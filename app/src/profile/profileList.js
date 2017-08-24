@@ -85,22 +85,39 @@ class Login extends Component {
       );
     }
 }
-  
-const Logged = (props) => (
-  <IconMenu
-    {...props}
-    iconButtonElement={
-      <IconButton><MoreVertIcon /></IconButton>
+
+class Logged extends Component {
+
+  handleChangeSingle = (event, value) => {
+    switch(value) {
+      case '1':
+        window.location.href="/profileEdit"
+      break;
+      case '2':
+      break;
+      case '3':
+      break;
+      default :
+
     }
-    targetOrigin={{horizontal: 'right', vertical: 'top'}}
-    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-  >
-    <MenuItem primaryText="Edit" />
-    <MenuItem primaryText="Remove" />
-    <MenuItem primaryText="Sign out" />
-  </IconMenu>
-);
-  
+  };
+
+  render() {
+    return (
+      <IconMenu {...this.props}  
+      iconButtonElement={
+        <IconButton><MoreVertIcon /></IconButton>
+      }
+      targetOrigin={{horizontal: 'right', vertical: 'top'}}
+      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+      onChange={this.handleChangeSingle}>
+      <MenuItem value="1" primaryText="Edit" />
+      <MenuItem value="2" primaryText="Remove" />
+      <MenuItem value="3" primaryText="Sign out" />
+    </IconMenu>
+    );
+  };
+}
 Logged.muiName = 'IconMenu';
   
   /**

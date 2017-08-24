@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class ProfileEdit extends Comment {
+class ProfileEdit extends Component {
     render() {
         return(<div>ProfileEdit</div>);
     };
