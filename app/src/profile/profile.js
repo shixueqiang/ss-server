@@ -5,14 +5,18 @@ import ProfileEdit from './profileEdit.js'
 import { Router, Route, Link, BrowserRouter } from 'react-router-dom'
 import '../index.css';
 import App from '../App';
-const ProfileIndex = () => (
-    <BrowserRouter>
-    <div>
-        {/* <Route path="/" render={() => <ProfileList />}/> */}
-        <Route path="/profiles" render={() => <ProfileList />}/>
-        <Route path="/profileEdit" render={() => <ProfileEdit />} />
-      </div>
-    </BrowserRouter>
-);
+class ProfileIndex extends Component {
+    render() {
+        return (
+        <BrowserRouter>
+            <div>
+                {/* <Route path="/" component={ProfileList}/> */}
+                <Route path="/profiles" component={ProfileList}/>
+                <Route path="/profileEdit" component={ProfileEdit} />
+              </div>
+        </BrowserRouter>
+        );
+    }
+}
 
 ReactDOM.render(<ProfileIndex />, document.getElementById('root'));

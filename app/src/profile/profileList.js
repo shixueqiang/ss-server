@@ -11,6 +11,7 @@ import { Table } from 'antd';
 import 'antd/dist/antd.css';
 import $ from 'jquery';
 import './profile.css';
+import { Link } from 'react-router-dom'
 
 // export default class TableExampleControlled extends Component {
 //   state = {
@@ -91,9 +92,10 @@ class Logged extends Component {
   handleChangeSingle = (event, value) => {
     switch(value) {
       case '1':
-        window.location.href="/profileEdit"
+        this.props.callback();
       break;
       case '2':
+        this.props.callback();
       break;
       case '3':
       break;
@@ -120,6 +122,7 @@ class Logged extends Component {
 }
 Logged.muiName = 'IconMenu';
   
+var selectData = [];
   /**
    * This example is taking advantage of the composability of the `AppBar`
    * to render different components depending on the application state.
@@ -127,7 +130,6 @@ Logged.muiName = 'IconMenu';
 class ProfileList extends Component {
   state = {
     logged: true,
-    data: [],
   };
 
   handleChange = (event, logged) => {
@@ -135,11 +137,18 @@ class ProfileList extends Component {
   };
 
   editProfile = () => {
-
+      if(selectData.length > 0) {
+        var path = {
+          pathname:'/profileEdit',
+          state:selectData[0],
+        }
+        this.props.history.push(path);
+      }
   };
 
   updateData = (profiles) => {
       console.log(profiles.length);
+      selectData = profiles;
   };
 
   render() {
@@ -200,7 +209,7 @@ class ExampleTable extends React.Component {
     this.setState({ selectedRowKeys });
     var array = new Array();
     for(var i in selectedRowKeys) {
-        array.push(this.state.data[i]);
+        array.push(this.state.data[selectedRowKeys[i]]);
     }
     this.props.callback(array);
   }
