@@ -30,5 +30,8 @@ func initRouter() *gin.Engine {
 	router.GET("/profileEdit", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "profiles.html", nil)
 	})
+	router.GET("/profileInsert", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "profiles.html", nil)
+	})
 	return router
 }

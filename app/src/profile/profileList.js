@@ -92,12 +92,15 @@ class Logged extends Component {
   handleChangeSingle = (event, value) => {
     switch(value) {
       case '1':
-        this.props.callback();
+        this.props.callbackInsert();
       break;
       case '2':
-        this.props.callback();
+        this.props.callbackEdit();
       break;
       case '3':
+        this.props.callbackRemove();
+      break;
+      case '4':
       break;
       default :
 
@@ -113,9 +116,10 @@ class Logged extends Component {
       targetOrigin={{horizontal: 'right', vertical: 'top'}}
       anchorOrigin={{horizontal: 'right', vertical: 'top'}}
       onChange={this.handleChangeSingle}>
-      <MenuItem value="1" primaryText="Edit" />
-      <MenuItem value="2" primaryText="Remove" />
-      <MenuItem value="3" primaryText="Sign out" />
+      <MenuItem value="1" primaryText="Insert" />
+      <MenuItem value="2" primaryText="Edit" />
+      <MenuItem value="3" primaryText="Remove" />
+      <MenuItem value="4" primaryText="Sign out" />
     </IconMenu>
     );
   };
@@ -146,6 +150,14 @@ class ProfileList extends Component {
       }
   };
 
+  insertProfile = () => {
+    this.props.history.push({pathname:'/profileInsert'});
+  };
+
+  removeProfile = () => {
+    console.log("removeProfile");
+  };
+
   updateData = (profiles) => {
       console.log(profiles.length);
       selectData = profiles;
@@ -158,7 +170,7 @@ class ProfileList extends Component {
             <AppBar
             title="VPN PROFILE"
             iconElementLeft={<IconButton><NavigationClose/></IconButton>}
-            iconElementRight={this.state.logged ? <Logged callback={this.editProfile}/> : <Login />}
+            iconElementRight={this.state.logged ? <Logged callbackEdit={this.editProfile} callbackInsert={this.insertProfile} callbackRemove={this.removeProfile}/> : <Login />}
             className="nav"/>
         </MuiThemeProvider>
         <ExampleTable callback={this.updateData}/>  
