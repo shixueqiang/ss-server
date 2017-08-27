@@ -24,13 +24,13 @@ func initRouter() *gin.Engine {
 		c.HTML(http.StatusOK, "login.html", nil)
 	})
 	//profile相关的做react单页面应用
-	router.GET("/profiles", func(c *gin.Context) {
+	router.GET("/toProfiles", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "profiles.html", nil)
 	})
-	router.GET("/profileEdit", func(c *gin.Context) {
+	router.GET("/toProfileEdit", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "profiles.html", nil)
 	})
-	router.GET("/profileInsert", func(c *gin.Context) {
+	router.GET("/toProfileInsert", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "profiles.html", nil)
 	})
 	return router

@@ -12,9 +12,9 @@ class ProfileIndex extends Component {
         <BrowserRouter>
             <div>
                 {/* <Route path="/" component={ProfileList}/> */}
-                <Route path="/profiles" component={ProfileList}/>
-                <Route path="/profileEdit" component={ProfileEdit} />
-                <Route path="/profileInsert" component={ProfileInsert} />
+                <Route path="/toProfiles" component={ProfileList}/>
+                <Route path="/toProfileEdit" component={ProfileEdit} />
+                <Route path="/toProfileInsert" component={ProfileInsert} />
               </div>
         </BrowserRouter>
         );
