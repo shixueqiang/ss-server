@@ -35,5 +35,7 @@ func initRouter() *gin.Engine {
 	})
 
 	router.POST("/profileInsert", profileApi.InsertProfile)
+	router.POST("/profileUpdate", profileApi.UpdateProfile)
+	router.POST("/profileRemove", profileApi.RemoveProfile)
 	return router
 }

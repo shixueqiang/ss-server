@@ -6,12 +6,10 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { Table } from 'antd';
 import 'antd/dist/antd.css';
 import $ from 'jquery';
 import './profile.css';
-import { Link } from 'react-router-dom'
 
 // export default class TableExampleControlled extends Component {
 //   state = {
@@ -155,7 +153,25 @@ class ProfileList extends Component {
   };
 
   removeProfile = () => {
-    console.log("removeProfile");
+    const _this = this;
+    var ids = "";
+    for(var i in selectData) {
+      if(i < selectData.length - 1)
+        ids += selectData[i].ID + ",";
+      else
+        ids += selectData[i].ID;
+    }
+    console.log("removeProfile:" + ids);
+    $.ajax({
+        url:"/profileRemove",
+        data:{removeIds:ids},
+        type:"POST",
+        success: function(data) {
+            console.log(data);
+            if(data === "移除成功")
+              _this.refs.getSwordButton.afterRemove();
+        }
+    });
   };
 
   updateData = (profiles) => {
@@ -167,12 +183,12 @@ class ProfileList extends Component {
     return (
       <div>
         <MuiThemeProvider>
-            <AppBar
-            title="VPN PROFILE"
-            iconElementRight={this.state.logged ? <Logged callbackEdit={this.editProfile} callbackInsert={this.insertProfile} callbackRemove={this.removeProfile}/> : <Login />}
-            className="nav"/>
+              <AppBar
+              title="VPN PROFILE"
+              iconElementRight={this.state.logged ? <Logged callbackEdit={this.editProfile} callbackInsert={this.insertProfile} callbackRemove={this.removeProfile}/> : <Login />}
+              className="nav"/>
         </MuiThemeProvider>
-        <ExampleTable callback={this.updateData}/>  
+        <ExampleTable callback={this.updateData} ref="getSwordButton"/>  
       </div>
     );
   }
@@ -227,6 +243,16 @@ class ExampleTable extends React.Component {
     }
     this.props.callback(array);
   }
+
+  afterRemove = () => {
+    var array = this.state.selectedRowKeys;
+    var _data = this.state.data;
+    for(var i in array) {
+      _data.splice(array[i],1);
+    }
+    this.setState({selectedRowKeys: [],data:_data,});
+  }
+
   render() {
     const { loading, selectedRowKeys } = this.state;
     const rowSelection = {
