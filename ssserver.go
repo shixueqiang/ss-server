@@ -33,5 +33,7 @@ func initRouter() *gin.Engine {
 	router.GET("/toProfileInsert", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "profiles.html", nil)
 	})
+
+	router.POST("/profileInsert", profileApi.InsertProfile)
 	return router
 }

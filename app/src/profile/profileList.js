@@ -143,7 +143,7 @@ class ProfileList extends Component {
   editProfile = () => {
       if(selectData.length > 0) {
         var path = {
-          pathname:'/profileEdit',
+          pathname:'/toProfileEdit',
           state:selectData[0],
         }
         this.props.history.push(path);
@@ -151,7 +151,7 @@ class ProfileList extends Component {
   };
 
   insertProfile = () => {
-    this.props.history.push({pathname:'/profileInsert'});
+    this.props.history.push({pathname:'/toProfileInsert'});
   };
 
   removeProfile = () => {
@@ -169,7 +169,6 @@ class ProfileList extends Component {
         <MuiThemeProvider>
             <AppBar
             title="VPN PROFILE"
-            iconElementLeft={<IconButton><NavigationClose/></IconButton>}
             iconElementRight={this.state.logged ? <Logged callbackEdit={this.editProfile} callbackInsert={this.insertProfile} callbackRemove={this.removeProfile}/> : <Login />}
             className="nav"/>
         </MuiThemeProvider>
@@ -182,6 +181,9 @@ class ProfileList extends Component {
 const columns = [{
   title: 'ID',
   dataIndex: 'ID',
+}, {
+  title: 'Name',
+  dataIndex: 'Name',
 }, {
   title: 'Host',
   dataIndex: 'Host',
