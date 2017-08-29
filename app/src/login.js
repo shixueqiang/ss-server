@@ -1,56 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import './App.css';
-import 'antd/dist/antd.css';
-
-const FormItem = Form.Item;
+import $ from 'jquery';
+import TextField from 'material-ui/TextField';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class NormalLoginForm extends React.Component {
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
+
+  handleClick = () => {
+    const _this = this;
+    $.ajax({
+        url:"/login",
+        data:$("#myform").serialize(),
+        type:"POST",
+        success: function(data) {
+            console.log(data);
+            if(data === "success")
+              window.location.href="/toProfiles";
+        }
     });
   }
+
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
-        <FormItem>
-          {getFieldDecorator('userName', {
-            rules: [{ required: true, message: 'Please input your username!' }],
-          })(
-            <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username" />
-          )}
-        </FormItem>
-        <FormItem>
-          {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Please input your Password!' }],
-          })(
-            <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="Password" />
-          )}
-        </FormItem>
-        <FormItem>
-          {getFieldDecorator('remember', {
-            valuePropName: 'checked',
-            initialValue: true,
-          })(
-            <Checkbox>Remember me</Checkbox>
-          )}
-          <a className="login-form-forgot" href="">Forgot password</a>
-          <Button type="primary" htmlType="submit" className="login-form-button">
-            Log in
-          </Button>
-          Or <a href="">register now!</a>
-        </FormItem>
-      </Form>
-    );
+      <MuiThemeProvider>
+        <form id="myform" action="/login" method="post">
+          <TextField floatingLabelText="Account" name="account"/>
+          <TextField floatingLabelText="Password" name="password" type="password"/>
+          <button type="button" className="button buttonBlue" onClick={this.handleClick}>LOGIN</button>
+        </form>
+      </MuiThemeProvider>
+    )
   }
 }
 
-const WrappedNormalLoginForm = Form.create()(NormalLoginForm);
-
-ReactDOM.render(<WrappedNormalLoginForm />, document.getElementById('root'));
+ReactDOM.render(<NormalLoginForm />, document.getElementById('root'));

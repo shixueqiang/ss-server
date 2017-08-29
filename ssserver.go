@@ -4,11 +4,14 @@ import (
 	"net/http"
 	profileApi "ss-server/apis"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
 func initRouter() *gin.Engine {
 	router := gin.Default()
+	store := sessions.NewCookieStore([]byte("secret"))
+	router.Use(sessions.Sessions("mysession", store))
 
 	router.GET("/getAllprofile", profileApi.GetAllProfileAPICrypto)
 	router.GET("/getAllprofileNotCrypto", profileApi.GetAllProfileAPINotCrypto)
@@ -20,9 +23,10 @@ func initRouter() *gin.Engine {
 	router.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
-	router.GET("/login", func(c *gin.Context) {
+	router.GET("/toLogin", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.html", nil)
 	})
+	router.POST("login", profileApi.Login)
 	//profile相关的做react单页面应用
 	router.GET("/toProfiles", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "profiles.html", nil)

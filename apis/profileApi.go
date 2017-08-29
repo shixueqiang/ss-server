@@ -9,8 +9,24 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
+
+func Login(c *gin.Context) {
+	account := c.PostForm("account")
+	password := c.PostForm("password")
+	user, err := profileDao.QueryUser(account, password)
+	if err != nil {
+		log.Fatalln(err)
+		c.String(http.StatusOK, "fail")
+	}
+	log.Printf(user.Name)
+	session := sessions.Default(c)
+	session.Set("user", user)
+	session.Save()
+	c.String(http.StatusOK, "success")
+}
 
 func GetAllProfileAPICrypto(c *gin.Context) {
 	profiles, err := profileDao.QueryAllProfile(true)
