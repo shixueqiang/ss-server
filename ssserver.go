@@ -17,10 +17,9 @@ func Logger() gin.HandlerFunc {
 		mUser := session.Get("user")
 		log.Printf("mUser:%s", mUser)
 		uri := c.Request.RequestURI
-		log.Printf("url:" + uri)
 		if mUser == nil && uri != "/toLogin" && uri != "/login" {
-			log.Printf("redirect /toLogin")
-			c.Redirect(http.StatusMovedPermanently, "/toLogin")
+			//301永久重定向会被浏览器缓存，302临时重定向
+			c.Redirect(http.StatusFound, "/toLogin")
 		} else {
 			// Set example variable
 			c.Set("loginUser", mUser)
