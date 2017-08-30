@@ -7,6 +7,8 @@ debug
 /.vscode/settings.json
 /.vscode/launch.json
 config.yaml
+ss-server
+ss-server.exe
 # Test binary, build with `go test -c`
 *.test
 
