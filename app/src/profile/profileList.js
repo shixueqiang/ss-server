@@ -99,6 +99,15 @@ class Logged extends Component {
         this.props.callbackRemove();
       break;
       case '4':
+        $.ajax({
+          url:"/signOut",
+          type:"POST",
+          success: function(data) {
+              console.log(data);
+              if(data === "success")
+                window.location.href="/toLogin"
+          }
+        });
       break;
       default :
 
@@ -223,7 +232,7 @@ class ExampleTable extends React.Component {
 
   componentDidMount() {
     const _this = this;
-    $.getJSON( "http://127.0.0.1:8055/getAllprofileNotCrypto")
+    $.getJSON( "/getAllprofileNotCrypto")
     .done(function( json ) {
       console.log( "JSON Data: " + json.profiles[0].Host);
       _this.setState({data: json.profiles,});

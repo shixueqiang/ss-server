@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	profileDao "ss-server/database"
@@ -21,9 +22,18 @@ func Login(c *gin.Context) {
 		log.Fatalln(err)
 		c.String(http.StatusOK, "fail")
 	}
-	log.Printf(user.Name)
+	var userStr []byte
+	userStr, err = json.Marshal(user)
+	log.Printf(string(userStr))
 	session := sessions.Default(c)
-	session.Set("user", user)
+	session.Set("user", string(userStr))
+	session.Save()
+	c.String(http.StatusOK, "success")
+}
+
+func SignOut(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Delete("user")
 	session.Save()
 	c.String(http.StatusOK, "success")
 }
