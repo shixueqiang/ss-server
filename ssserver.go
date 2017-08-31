@@ -48,11 +48,12 @@ func initRouter() *gin.Engine {
 	// router.LoadHTMLGlob("app/build/*/*.html")
 	router.LoadHTMLFiles("app/build/index.html", "app/build/login.html", "app/build/profile/profiles.html")
 
+	router.GET("/getAllprofile", profileApi.GetAllProfileAPICrypto)
+
 	store := sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
 	router.Use(Logger())
 
-	router.GET("/getAllprofile", profileApi.GetAllProfileAPICrypto)
 	router.GET("/getAllprofileNotCrypto", profileApi.GetAllProfileAPINotCrypto)
 	router.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
