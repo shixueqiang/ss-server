@@ -17,7 +17,7 @@ func AesEncrypt(content string) string {
 	// 创建加密算法aes
 	c, err := aes.NewCipher([]byte(key))
 	if err != nil {
-		log.Fatalln("Error: NewCipher(%d bytes) = %s", len(key), err)
+		log.Fatalf("Error: NewCipher(%d bytes) = %s\n", len(key), err)
 	}
 
 	//加密字符串
@@ -39,7 +39,7 @@ func AesDecrypt(content string) string {
 	// 创建加密算法aes
 	c, err := aes.NewCipher([]byte(key))
 	if err != nil {
-		log.Fatalln("Error: NewCipher(%d bytes) = %s", len(key), err)
+		log.Fatalf("Error: NewCipher(%d bytes) = %s\n", len(key), err)
 	}
 	// 解密字符串
 	decryptText := make([]byte, len(text))
@@ -53,7 +53,7 @@ func AesEncrypt1(origData []byte) string {
 	var cryptedKey = []byte(key)
 	block, err := aes.NewCipher(cryptedKey)
 	if err != nil {
-		log.Fatalln("Error: NewCipher(%d bytes) = %s", len(key), err)
+		log.Fatalf("Error: NewCipher(%d bytes) = %s\n", len(key), err)
 	}
 	blockSize := block.BlockSize()
 	origData = PKCS5Padding(origData, blockSize)
@@ -67,7 +67,7 @@ func AesDecrypt1(crypted []byte) string {
 	var cryptedKey = []byte(key)
 	block, err := aes.NewCipher(cryptedKey)
 	if err != nil {
-		log.Fatalln("Error: NewCipher(%d bytes) = %s", len(key), err)
+		log.Fatalf("Error: NewCipher(%d bytes) = %s\n", len(key), err)
 	}
 	blockSize := block.BlockSize()
 	blockMode := cipher.NewCBCDecrypter(block, cryptedKey[:blockSize])

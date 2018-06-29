@@ -9,6 +9,7 @@ debug
 config.yaml
 ss-server
 ss-server.exe
+datas
 # Test binary, build with `go test -c`
 *.test
 

@@ -17,7 +17,7 @@ type conf struct {
 	DBName     string `yaml:"db_name"`
 }
 
-func init() {
+func initMysql() {
 	var err error
 	//打开数据库
 	Config := conf{}

@@ -3,12 +3,20 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	profileApi "ss-server/apis"
 	"time"
 
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
+
+var APP_PATH string
+
+func init() {
+	APP_PATH = os.Getenv("GOBIN")
+}
 
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -42,19 +50,20 @@ func Logger() gin.HandlerFunc {
 func initRouter() *gin.Engine {
 	router := gin.Default()
 
-	router.Static("/static", "./app/build/static")
-	router.StaticFile("/favicon.ico", "./app/build/favicon.ico")
-	router.StaticFile("/manifest.json", "./app/build/manifest.json")
+	router.Static("/static", APP_PATH+"/app/build/static")
+	router.StaticFile("/favicon.ico", APP_PATH+"/app/build/favicon.ico")
+	router.StaticFile("/manifest.json", APP_PATH+"/app/build/manifest.json")
 	// router.LoadHTMLGlob("app/build/*/*.html")
-	router.LoadHTMLFiles("app/build/index.html", "app/build/login.html", "app/build/profile/profiles.html")
+	router.LoadHTMLFiles(APP_PATH+"/app/build/index.html", APP_PATH+"/app/build/login.html", APP_PATH+"/app/build/profile/profiles.html")
 
 	router.GET("/getAllprofile", profileApi.GetAllProfileAPICrypto)
 
-	store := sessions.NewCookieStore([]byte("secret"))
+	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
 	router.Use(Logger())
 
 	router.GET("/getAllprofileNotCrypto", profileApi.GetAllProfileAPINotCrypto)
+	router.GET("/GetAllProfileAPICrypto", profileApi.GetAllProfileAPICrypto)
 	router.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
@@ -77,5 +86,6 @@ func initRouter() *gin.Engine {
 	router.POST("/profileInsert", profileApi.InsertProfile)
 	router.POST("/profileUpdate", profileApi.UpdateProfile)
 	router.POST("/profileRemove", profileApi.RemoveProfile)
+	router.POST("/profileImport", profileApi.ImportProfile)
 	return router
 }

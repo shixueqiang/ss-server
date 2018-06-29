@@ -21,7 +21,7 @@ func QueryAllProfile(isCrypto bool) (profiles []profile.Profile, err error) {
 		var profile profile.Profile
 		rows.Scan(&profile.ID, &profile.Name, &profile.Host, &profile.LocalPort, &profile.RemotePort, &profile.Password, &profile.Protocol, &profile.ProtocolParam, &profile.Obfs, &profile.ObfsParam, &profile.Method,
 			&profile.Route, &profile.RemoteDNS, &profile.ProxyApps, &profile.Bypass, &profile.Udpdns, &profile.Ipv6, &profile.Individual,
-			&profile.Date, &profile.UserOrder, &profile.Plugin, &profile.Country, &profile.VpnType, &profile.Ikev2Type)
+			&profile.Date, &profile.UserOrder, &profile.Plugin, &profile.Country, &profile.VpnType, &profile.BrookType)
 		if isCrypto {
 			profile.Host = cryptoUtil.AesEncrypt(profile.Host)
 			profile.Password = cryptoUtil.AesEncrypt(profile.Password)
@@ -39,7 +39,7 @@ func QueryAllProfile(isCrypto bool) (profiles []profile.Profile, err error) {
 
 func InsertProfile(profile *profile.Profile) (id int64, err error) {
 	rows, err := Db.Exec("INSERT INTO vpn_profile(name,host,local_port,remote_port,password,protocol,protocol_param,obfs,obfs_param,method,route,remote_dns,proxy_apps,bypass,udpdns,ipv6,individual,date,user_order,plugin,country,type,ikev2_type) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-		profile.Name, profile.Host, profile.LocalPort, profile.RemotePort, profile.Password, profile.Protocol, profile.ProtocolParam, profile.Obfs, profile.ObfsParam, profile.Method, profile.Route, profile.RemoteDNS, profile.ProxyApps, profile.Bypass, profile.Udpdns, profile.Ipv6, profile.Individual, profile.Date, profile.UserOrder, profile.Plugin, profile.Country, profile.VpnType, profile.Ikev2Type)
+		profile.Name, profile.Host, profile.LocalPort, profile.RemotePort, profile.Password, profile.Protocol, profile.ProtocolParam, profile.Obfs, profile.ObfsParam, profile.Method, profile.Route, profile.RemoteDNS, profile.ProxyApps, profile.Bypass, profile.Udpdns, profile.Ipv6, profile.Individual, profile.Date, profile.UserOrder, profile.Plugin, profile.Country, profile.VpnType, profile.BrookType)
 	if err != nil {
 		return
 	}
@@ -49,7 +49,7 @@ func InsertProfile(profile *profile.Profile) (id int64, err error) {
 
 func UpdateProfile(profile *profile.Profile) (rowsCnt int64, err error) {
 	rows, err := Db.Exec("UPDATE vpn_profile SET name = ?,host = ?,local_port = ?,remote_port = ?,password = ?,protocol = ?,protocol_param = ?,obfs = ?,obfs_param = ?,method = ?,route = ?,remote_dns = ?,proxy_apps = ?,bypass = ?,udpdns = ?,ipv6 = ?,individual = ?,date = ?,user_order = ?,plugin = ?,country = ?,type = ?,ikev2_type = ? where id = ?",
-		profile.Name, profile.Host, profile.LocalPort, profile.RemotePort, profile.Password, profile.Protocol, profile.ProtocolParam, profile.Obfs, profile.ObfsParam, profile.Method, profile.Route, profile.RemoteDNS, profile.ProxyApps, profile.Bypass, profile.Udpdns, profile.Ipv6, profile.Individual, profile.Date, profile.UserOrder, profile.Plugin, profile.Country, profile.VpnType, profile.Ikev2Type, profile.ID)
+		profile.Name, profile.Host, profile.LocalPort, profile.RemotePort, profile.Password, profile.Protocol, profile.ProtocolParam, profile.Obfs, profile.ObfsParam, profile.Method, profile.Route, profile.RemoteDNS, profile.ProxyApps, profile.Bypass, profile.Udpdns, profile.Ipv6, profile.Individual, profile.Date, profile.UserOrder, profile.Plugin, profile.Country, profile.VpnType, profile.BrookType, profile.ID)
 	if err != nil {
 		return
 	}

@@ -6,6 +6,8 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 import { Table } from 'antd';
 import 'antd/dist/antd.css';
 import $ from 'jquery';
@@ -90,15 +92,19 @@ class Logged extends Component {
   handleChangeSingle = (event, value) => {
     switch(value) {
       case '1':
-        this.props.callbackInsert();
+        //弹出选择框
+        this.props.callbackImport();
       break;
       case '2':
-        this.props.callbackEdit();
+        this.props.callbackInsert();
       break;
       case '3':
-        this.props.callbackRemove();
+        this.props.callbackEdit();
       break;
       case '4':
+        this.props.callbackRemove();
+      break;
+      case '5':
         $.ajax({
           url:"/signOut",
           type:"POST",
@@ -123,10 +129,11 @@ class Logged extends Component {
       targetOrigin={{horizontal: 'right', vertical: 'top'}}
       anchorOrigin={{horizontal: 'right', vertical: 'top'}}
       onChange={this.handleChangeSingle}>
-      <MenuItem value="1" primaryText="Insert" />
-      <MenuItem value="2" primaryText="Edit" />
-      <MenuItem value="3" primaryText="Remove" />
-      <MenuItem value="4" primaryText="Sign out" />
+      <MenuItem value="1" primaryText="Import" />
+      <MenuItem value="2" primaryText="Insert" />
+      <MenuItem value="3" primaryText="Edit" />
+      <MenuItem value="4" primaryText="Remove" />
+      <MenuItem value="5" primaryText="Sign out" />
     </IconMenu>
     );
   };
@@ -143,8 +150,28 @@ class ProfileList extends Component {
     logged: true,
   };
 
+  handleClickOpen = () => {
+    this.refs.mDialog.handleOpen();
+  };
+
   handleChange = (event, logged) => {
     this.setState({logged: logged});
+  };
+
+  importProfile = () => {
+    const _this = this;
+    var _url = $("#importUrl").val()
+    console.log("importProfile url:" + _url);
+    $.ajax({
+      url:"/profileImport",
+      data:{url:_url},
+      type:"POST",
+      success: function(data) {
+          console.log(data);
+          if(data === "导入成功")
+            _this.refs.getSwordButton.afterImport();
+      }
+  });
   };
 
   editProfile = () => {
@@ -163,17 +190,17 @@ class ProfileList extends Component {
 
   removeProfile = () => {
     const _this = this;
-    var ids = "";
+    var urls = "";
     for(var i in selectData) {
       if(i < selectData.length - 1)
-        ids += selectData[i].ID + ",";
+        urls += selectData[i].OriginUrl + " ";
       else
-        ids += selectData[i].ID;
+        urls += selectData[i].OriginUrl;
     }
-    console.log("removeProfile:" + ids);
+    console.log("removeProfile:" + urls);
     $.ajax({
         url:"/profileRemove",
-        data:{removeIds:ids},
+        data:{removeUrls:urls},
         type:"POST",
         success: function(data) {
             console.log(data);
@@ -194,18 +221,68 @@ class ProfileList extends Component {
         <MuiThemeProvider>
               <AppBar
               title="VPN PROFILE"
-              iconElementRight={this.state.logged ? <Logged callbackEdit={this.editProfile} callbackInsert={this.insertProfile} callbackRemove={this.removeProfile}/> : <Login />}
+              iconElementRight={this.state.logged ? <Logged callbackImport={this.handleClickOpen} callbackEdit={this.editProfile} callbackInsert={this.insertProfile} callbackRemove={this.removeProfile}/> : <Login />}
               className="nav"/>
         </MuiThemeProvider>
-        <ExampleTable callback={this.updateData} ref="getSwordButton"/>  
+        <ExampleTable callback={this.updateData} ref="getSwordButton"/>
+        <DialogExampleModal callback={this.importProfile} ref="mDialog"/>
+      </div>
+    );
+  }
+}
+
+class DialogExampleModal extends React.Component {
+  state = {
+    open: false,
+  };
+
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
+  handleImport = () => {
+    this.setState({open: false});
+    this.props.callback()
+  }
+
+  render() {
+    const actions = [
+      <FlatButton
+        label="取消"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="确定"
+        primary={true}
+        onClick={this.handleImport}
+      />,
+    ];
+
+    return (
+      <div>
+         <MuiThemeProvider>
+        <Dialog
+          title="导入url"
+          actions={actions}
+          modal={true}
+          open={this.state.open}
+        >
+        <TextField id="importUrl" hintText="ss or brook url" fullWidth={true}/>
+        </Dialog>
+        </MuiThemeProvider>
       </div>
     );
   }
 }
 
 const columns = [{
-  title: 'ID',
-  dataIndex: 'ID',
+  title: 'OriginUrl',
+  dataIndex: 'OriginUrl',
 }, {
   title: 'Name',
   dataIndex: 'Name',
@@ -232,7 +309,7 @@ class ExampleTable extends React.Component {
 
   componentDidMount() {
     const _this = this;
-    $.getJSON( "/getAllprofileNotCrypto")
+    $.getJSON( "/GetAllProfileAPICrypto")
     .done(function( json ) {
       console.log( "JSON Data: " + json.profiles[0].Host);
       _this.setState({data: json.profiles,});
@@ -260,6 +337,19 @@ class ExampleTable extends React.Component {
       _data.splice(array[i],1);
     }
     this.setState({selectedRowKeys: [],data:_data,});
+  }
+
+  afterImport =() => {
+    const _this = this;
+    $.getJSON( "/GetAllProfileAPICrypto")
+    .done(function( json ) {
+      console.log( "JSON Data: " + json.profiles[0].Host);
+      _this.setState({data: json.profiles,});
+    })
+    .fail(function( jqxhr, textStatus, error ) {
+      var err = textStatus + ", " + error;
+      console.log( "Request Failed: " + err );
+    });
   }
 
   render() {
