@@ -71,3 +71,13 @@ func DecodeShadowSocksUrl(encodeurl string) (*models.Profile, error) {
 	}
 	return nil, errors.New("can't parse the url")
 }
+
+func ToShadowSocksUrl(model *models.Profile) string {
+	host := model.Method + ":" + model.Password + "@" + model.Host + ":" + strconv.Itoa(model.RemotePort)
+	return url.QueryEscape("ss://" + base64.StdEncoding.EncodeToString([]byte(host)))
+}
+
+func ToBrookUrl(model *models.Brook) string {
+	result := "brook://" + model.BrookType + " " + model.IP + ":" + strconv.Itoa(model.Port) + " " + model.Password
+	return url.QueryEscape(result)
+}

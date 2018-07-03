@@ -58,6 +58,7 @@ func GetAllProfileAPICrypto(c *gin.Context) {
 	for i := 0; i < len(p.Brooks); i++ {
 		profile := new(profile.Profile)
 		profile.OriginUrl = p.Brooks[i].OriginUrl
+		profile.Name = p.Brooks[i].Name
 		profile.Host = p.Brooks[i].IP
 		profile.VpnType = 2
 		profile.RemotePort = p.Brooks[i].Port
@@ -123,7 +124,7 @@ func InsertProfile(c *gin.Context) {
 	Route := c.PostForm("Route")
 	RemoteDNS := c.PostForm("RemoteDNS")
 	VpnType := c.PostForm("VpnType")
-	// Ikev2Type := c.PostForm("Ikev2Type")
+	BrookType := c.PostForm("BrookType")
 	var mProfile *profile.Profile = new(profile.Profile)
 	mProfile.Name = Name
 	mProfile.Host = Host
@@ -150,23 +151,37 @@ func InsertProfile(c *gin.Context) {
 	mProfile.Country = ""
 	vpnType, err := strconv.Atoi(VpnType)
 	mProfile.VpnType = vpnType
-	// ikev2Type, err := strconv.Atoi(Ikev2Type)
-	// mProfile.Ikev2Type = ikev2Type
-	id, err := profileDao.InsertProfile(mProfile)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	mProfile.BrookType = BrookType
+	mProfile.OriginUrl = utils.ToShadowSocksUrl(mProfile)
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "*")
 	c.Header("Access-Control-Allow-Headers", "x-requested-with,content-type")
-	if id > 0 {
-		c.String(http.StatusOK, "插入成功")
-	} else {
-		c.String(http.StatusOK, "插入失败")
+	if vpnType == 1 {
+		err = profileDao.InsertProfileToMsgpack(mProfile)
+		if err != nil {
+			c.String(http.StatusOK, "插入失败")
+		} else {
+			c.String(http.StatusOK, "插入成功")
+		}
+	} else if vpnType == 2 {
+		mBrook := new(profile.Brook)
+		mBrook.Name = Name
+		mBrook.IP = Host
+		mBrook.Port = remotePort
+		mBrook.Password = Password
+		mBrook.BrookType = BrookType
+		mBrook.OriginUrl = utils.ToBrookUrl(mBrook)
+		err = profileDao.InsertBrook(mBrook)
+		if err != nil {
+			c.String(http.StatusOK, "插入失败")
+		} else {
+			c.String(http.StatusOK, "插入成功")
+		}
 	}
 }
 
 func UpdateProfile(c *gin.Context) {
+	OriginUrl := c.PostForm("OriginUrl")
 	ID := c.PostForm("ID")
 	Name := c.PostForm("Name")
 	Host := c.PostForm("Host")
@@ -181,8 +196,9 @@ func UpdateProfile(c *gin.Context) {
 	Route := c.PostForm("Route")
 	RemoteDNS := c.PostForm("RemoteDNS")
 	VpnType := c.PostForm("VpnType")
-	// Ikev2Type := c.PostForm("Ikev2Type")
+	BrookType := c.PostForm("BrookType")
 	var mProfile *profile.Profile = new(profile.Profile)
+	mProfile.OriginUrl = OriginUrl
 	mId, err := strconv.Atoi(ID)
 	mProfile.ID = mId
 	mProfile.Name = Name
@@ -210,19 +226,33 @@ func UpdateProfile(c *gin.Context) {
 	mProfile.Country = ""
 	vpnType, err := strconv.Atoi(VpnType)
 	mProfile.VpnType = vpnType
-	// ikev2Type, err := strconv.Atoi(Ikev2Type)
-	// mProfile.Ikev2Type = ikev2Type
-	rowsCnt, err := profileDao.UpdateProfile(mProfile)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	mProfile.BrookType = BrookType
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "*")
 	c.Header("Access-Control-Allow-Headers", "x-requested-with,content-type")
-	if rowsCnt > 0 {
-		c.String(http.StatusOK, "更新成功")
-	} else {
-		c.String(http.StatusOK, "更新失败")
+	if vpnType == 1 {
+		err = profileDao.UpdateProfileFromMsgpack(mProfile)
+		if err != nil {
+			fmt.Println(err)
+			c.String(http.StatusOK, "更新失败")
+		} else {
+			c.String(http.StatusOK, "更新成功")
+		}
+	} else if vpnType == 2 {
+		mBrook := new(profile.Brook)
+		mBrook.OriginUrl = OriginUrl
+		mBrook.Name = Name
+		mBrook.IP = Host
+		mBrook.Port = remotePort
+		mBrook.Password = Password
+		mBrook.BrookType = BrookType
+		err = profileDao.UpdateBrook(mBrook)
+		if err != nil {
+			fmt.Println(err)
+			c.String(http.StatusOK, "更新失败")
+		} else {
+			c.String(http.StatusOK, "更新成功")
+		}
 	}
 }
 

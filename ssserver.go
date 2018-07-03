@@ -15,7 +15,7 @@ import (
 var APP_PATH string
 
 func init() {
-	APP_PATH = os.Getenv("GOBIN")
+	APP_PATH = os.Getenv("GOBIN") + "/ss-server"
 }
 
 func Logger() gin.HandlerFunc {
@@ -63,7 +63,6 @@ func initRouter() *gin.Engine {
 	router.Use(Logger())
 
 	router.GET("/getAllprofileNotCrypto", profileApi.GetAllProfileAPINotCrypto)
-	router.GET("/GetAllProfileAPICrypto", profileApi.GetAllProfileAPICrypto)
 	router.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})

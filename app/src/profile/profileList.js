@@ -309,7 +309,7 @@ class ExampleTable extends React.Component {
 
   componentDidMount() {
     const _this = this;
-    $.getJSON( "/GetAllProfileAPICrypto")
+    $.getJSON( "/getAllprofile")
     .done(function( json ) {
       console.log( "JSON Data: " + json.profiles[0].Host);
       _this.setState({data: json.profiles,});
@@ -341,7 +341,7 @@ class ExampleTable extends React.Component {
 
   afterImport =() => {
     const _this = this;
-    $.getJSON( "/GetAllProfileAPICrypto")
+    $.getJSON( "/getAllprofile")
     .done(function( json ) {
       console.log( "JSON Data: " + json.profiles[0].Host);
       _this.setState({data: json.profiles,});

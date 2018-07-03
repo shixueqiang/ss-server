@@ -14,7 +14,7 @@ func Marshal(p *models.Package) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(os.Getenv("GOBIN")+"/datas", b, 0644)
+	err = ioutil.WriteFile(os.Getenv("GOBIN")+"/ss-server/datas", b, 0644)
 	if err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func Marshal(p *models.Package) error {
 }
 
 func QueryAll() (*models.Package, error) {
-	b, err := ioutil.ReadFile(os.Getenv("GOBIN") + "/datas")
+	b, err := ioutil.ReadFile(os.Getenv("GOBIN") + "/ss-server/datas")
 	if err != nil {
 		return new(models.Package), err
 	}
@@ -75,12 +75,18 @@ func UpdateBrook(model *models.Brook) error {
 	if err != nil {
 		return err
 	}
+	var index = -1
 	for i := 0; i < len(p.Brooks); i++ {
 		brook := p.Brooks[i]
-		if brook.OriginUrl == model.OriginUrl {
-			brook = *model
+		if model.OriginUrl == brook.OriginUrl {
+			index = i
+			break
 		}
 	}
+	if index >= 0 {
+		p.Brooks = append(p.Brooks[:index], p.Brooks[index+1:]...)
+	}
+	p.Brooks = append(p.Brooks, *model)
 	err = Marshal(p)
 	if err != nil {
 		return err
@@ -129,12 +135,18 @@ func UpdateProfileFromMsgpack(model *models.Profile) error {
 	if err != nil {
 		return err
 	}
+	var index = -1
 	for i := 0; i < len(p.Profiles); i++ {
 		profile := p.Profiles[i]
-		if profile.OriginUrl == model.OriginUrl {
-			profile = *model
+		if model.OriginUrl == profile.OriginUrl {
+			index = i
+			break
 		}
 	}
+	if index >= 0 {
+		p.Profiles = append(p.Profiles[:index], p.Profiles[index+1:]...)
+	}
+	p.Profiles = append(p.Profiles, *model)
 	err = Marshal(p)
 	if err != nil {
 		return err

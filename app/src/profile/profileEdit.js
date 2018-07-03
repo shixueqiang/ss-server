@@ -76,6 +76,7 @@ class ProfileEdit extends Component {
                 <div>
                     <form id="myform" action="/profileUpdate" method="post">
                         <input type="hidden" value={this.props.location.state.ID} name="ID"/>
+                        <input type="hidden" value={this.props.location.state.OriginUrl} name="OriginUrl"/>
                         <TextField className="profileTextField" floatingLabelText="Name" value={this.state.Name} name="Name" onChange={this.handleChange}/><br />
                         <TextField className="profileTextField" floatingLabelText="Host" value={this.state.Host} name="Host" onChange={this.handleChange}/><br />
                         <TextField className="profileTextField" floatingLabelText="LocalPort" value={this.state.LocalPort} defaultValue="1080" name="LocalPort" onChange={this.handleChange}/><br />
@@ -89,7 +90,7 @@ class ProfileEdit extends Component {
                         <TextField className="profileTextField" floatingLabelText="Route" value={this.state.Route} defaultValue="all" name="Route" onChange={this.handleChange}/><br />
                         <TextField className="profileTextField" floatingLabelText="RemoteDNS" value={this.state.RemoteDNS} defaultValue="8.8.8.8" name="RemoteDNS" onChange={this.handleChange}/><br />
                         <TextField className="profileTextField" floatingLabelText="VpnType" value={this.state.VpnType} defaultValue="1" name="VpnType" onChange={this.handleChange}/><br />
-                        <TextField className="profileTextField" floatingLabelText="Ikev2Type" value={this.state.Ikev2Type} defaultValue="1" name="Ikev2Type" onChange={this.handleChange}/><br />
+                        <TextField className="profileTextField" floatingLabelText="BrookType" value={this.state.BrookType} defaultValue="1" name="BrookType" onChange={this.handleChange}/><br />
                         <RaisedButton label="submit" primary={true} style={style}  onClick={this.handleClick}/>
                     </form>
                     <Dialog

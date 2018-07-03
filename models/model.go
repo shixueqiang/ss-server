@@ -30,6 +30,7 @@ type Profile struct {
 
 type Brook struct {
 	OriginUrl string
+	Name      string
 	BrookType string
 	IP        string
 	Port      int
