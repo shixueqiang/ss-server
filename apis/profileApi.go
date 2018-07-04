@@ -132,7 +132,7 @@ func InsertProfile(c *gin.Context) {
 	mProfile.LocalPort = localPort
 	remotePort, err := strconv.Atoi(RemotePort)
 	mProfile.RemotePort = remotePort
-	mProfile.Password = Password
+	mProfile.Password = utils.AesEncrypt(Password)
 	mProfile.Protocol = Protocol
 	mProfile.ProtocolParam = ProtocolParam
 	mProfile.Obfs = Obfs
@@ -207,7 +207,7 @@ func UpdateProfile(c *gin.Context) {
 	mProfile.LocalPort = localPort
 	remotePort, err := strconv.Atoi(RemotePort)
 	mProfile.RemotePort = remotePort
-	mProfile.Password = Password
+	mProfile.Password = utils.AesEncrypt(Password)
 	mProfile.Protocol = Protocol
 	mProfile.ProtocolParam = ProtocolParam
 	mProfile.Obfs = Obfs
