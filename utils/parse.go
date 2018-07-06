@@ -19,7 +19,7 @@ func DecodeBrookUrl(encodeurl string) (*models.Brook, error) {
 	}
 	array := strings.Split(decodeurl, " ")
 	brook := new(models.Brook)
-	brook.OriginUrl = url.QueryEscape(encodeurl)
+	brook.OriginUrl = AesEncrypt(encodeurl)
 	brook.BrookType = string([]byte(array[0])[8:len(array[0])])
 	brook.IP = strings.Split(array[1], ":")[0]
 	portStr := strings.Split(array[1], ":")[1]
@@ -43,6 +43,13 @@ func DecodeShadowSocksUrl(encodeurl string) (*models.Profile, error) {
 		return nil, err
 	}
 	if _url.User == nil {
+		//判断host是否是4的倍数，不是=号补齐
+		offset := 4 - len([]rune(_url.Host))%4
+		if offset > 0 && offset < 4 {
+			for i := 0; i < offset; i++ {
+				_url.Host += "="
+			}
+		}
 		decodeHost, err := base64.StdEncoding.DecodeString(_url.Host)
 		if err != nil {
 			fmt.Println(err)
@@ -55,7 +62,7 @@ func DecodeShadowSocksUrl(encodeurl string) (*models.Profile, error) {
 		}
 		match := r.FindAllStringSubmatch(string(decodeHost), 1)
 		profile := new(models.Profile)
-		profile.OriginUrl = url.QueryEscape(encodeurl)
+		profile.OriginUrl = AesEncrypt(encodeurl)
 		profile.Method = match[0][1]
 		profile.Password = AesEncrypt(match[0][2])
 		profile.Host = match[0][3]

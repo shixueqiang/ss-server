@@ -66,7 +66,7 @@ class ProfileInsert extends Component {
                         <TextField className="profileTextField" floatingLabelText="Route" defaultValue="all" name="Route"/><br />
                         <TextField className="profileTextField" floatingLabelText="RemoteDNS" defaultValue="8.8.8.8" name="RemoteDNS"/><br />
                         <TextField className="profileTextField" floatingLabelText="VpnType" defaultValue="1" name="VpnType"/><br />
-                        <TextField className="profileTextField" floatingLabelText="BrookType" defaultValue="1" name="BrookType"/><br />
+                        <TextField className="profileTextField" floatingLabelText="BrookType" defaultValue="default" name="BrookType"/><br />
                         <RaisedButton label="submit" primary={true} style={style}  onClick={this.handleClick}/>
                     </form>
                     <Dialog

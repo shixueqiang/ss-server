@@ -45,29 +45,12 @@ func SignOut(c *gin.Context) {
 }
 
 func GetAllProfileAPICrypto(c *gin.Context) {
-	// profiles, err := profileDao.QueryAllProfile(true)
 	p, err := profileDao.QueryAll()
 	if err != nil {
 		fmt.Println(err)
 	}
-	//将brooks转换成profiles
-	var profiles = make([]profile.Profile, 0)
-	for i := 0; i < len(p.Profiles); i++ {
-		profiles = append(profiles, p.Profiles[i])
-	}
-	for i := 0; i < len(p.Brooks); i++ {
-		profile := new(profile.Profile)
-		profile.OriginUrl = p.Brooks[i].OriginUrl
-		profile.Name = p.Brooks[i].Name
-		profile.Host = p.Brooks[i].IP
-		profile.VpnType = 2
-		profile.RemotePort = p.Brooks[i].Port
-		profile.Password = p.Brooks[i].Password
-		profile.BrookType = p.Brooks[i].BrookType
-		profiles = append(profiles, *profile)
-	}
 	c.JSON(http.StatusOK, gin.H{
-		"profiles": profiles,
+		"profiles": p.Profiles,
 	})
 }
 
@@ -91,7 +74,7 @@ func ImportProfile(c *gin.Context) {
 	c.Header("Access-Control-Allow-Headers", "x-requested-with,content-type")
 	if strings.Index(encodeUrl, "brook://") != -1 {
 		brook, e := utils.DecodeBrookUrl(encodeUrl)
-		e = profileDao.InsertBrook(brook)
+		e = profileDao.InsertProfileToMsgpack(brook.ToProfile())
 		if e != nil {
 			c.String(http.StatusOK, "导入失败")
 		} else {
@@ -152,31 +135,15 @@ func InsertProfile(c *gin.Context) {
 	vpnType, err := strconv.Atoi(VpnType)
 	mProfile.VpnType = vpnType
 	mProfile.BrookType = BrookType
-	mProfile.OriginUrl = utils.ToShadowSocksUrl(mProfile)
+	mProfile.OriginUrl = utils.AesEncrypt(utils.ToShadowSocksUrl(mProfile))
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "*")
 	c.Header("Access-Control-Allow-Headers", "x-requested-with,content-type")
-	if vpnType == 1 {
-		err = profileDao.InsertProfileToMsgpack(mProfile)
-		if err != nil {
-			c.String(http.StatusOK, "插入失败")
-		} else {
-			c.String(http.StatusOK, "插入成功")
-		}
-	} else if vpnType == 2 {
-		mBrook := new(profile.Brook)
-		mBrook.Name = Name
-		mBrook.IP = Host
-		mBrook.Port = remotePort
-		mBrook.Password = Password
-		mBrook.BrookType = BrookType
-		mBrook.OriginUrl = utils.ToBrookUrl(mBrook)
-		err = profileDao.InsertBrook(mBrook)
-		if err != nil {
-			c.String(http.StatusOK, "插入失败")
-		} else {
-			c.String(http.StatusOK, "插入成功")
-		}
+	err = profileDao.InsertProfileToMsgpack(mProfile)
+	if err != nil {
+		c.String(http.StatusOK, "插入失败")
+	} else {
+		c.String(http.StatusOK, "插入成功")
 	}
 }
 
@@ -207,7 +174,7 @@ func UpdateProfile(c *gin.Context) {
 	mProfile.LocalPort = localPort
 	remotePort, err := strconv.Atoi(RemotePort)
 	mProfile.RemotePort = remotePort
-	mProfile.Password = utils.AesEncrypt(Password)
+	mProfile.Password = Password
 	mProfile.Protocol = Protocol
 	mProfile.ProtocolParam = ProtocolParam
 	mProfile.Obfs = Obfs
@@ -230,29 +197,12 @@ func UpdateProfile(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Methods", "*")
 	c.Header("Access-Control-Allow-Headers", "x-requested-with,content-type")
-	if vpnType == 1 {
-		err = profileDao.UpdateProfileFromMsgpack(mProfile)
-		if err != nil {
-			fmt.Println(err)
-			c.String(http.StatusOK, "更新失败")
-		} else {
-			c.String(http.StatusOK, "更新成功")
-		}
-	} else if vpnType == 2 {
-		mBrook := new(profile.Brook)
-		mBrook.OriginUrl = OriginUrl
-		mBrook.Name = Name
-		mBrook.IP = Host
-		mBrook.Port = remotePort
-		mBrook.Password = Password
-		mBrook.BrookType = BrookType
-		err = profileDao.UpdateBrook(mBrook)
-		if err != nil {
-			fmt.Println(err)
-			c.String(http.StatusOK, "更新失败")
-		} else {
-			c.String(http.StatusOK, "更新成功")
-		}
+	err = profileDao.UpdateProfileFromMsgpack(mProfile)
+	if err != nil {
+		fmt.Println(err)
+		c.String(http.StatusOK, "更新失败")
+	} else {
+		c.String(http.StatusOK, "更新成功")
 	}
 }
 
@@ -265,16 +215,10 @@ func RemoveProfile(c *gin.Context) {
 	// rowsCnt, err := profileDao.RemoveProfiles(ids)
 	var err error
 	for i := 0; i < len(urls); i++ {
-		if strings.Index(urls[i], "brook%3A%2F%2F") != -1 {
-			err = profileDao.RemoveBrook(urls[i])
-			if err != nil {
-				break
-			}
-		} else if strings.Index(urls[i], "ss%3A%2F%2F") != -1 {
-			err = profileDao.RemoveProfileFromMsgpack(urls[i])
-			if err != nil {
-				break
-			}
+		err = profileDao.RemoveProfileFromMsgpack(urls[i])
+		if err != nil {
+			fmt.Printf("%s\n", err)
+			break
 		}
 	}
 	c.Header("Access-Control-Allow-Origin", "*")

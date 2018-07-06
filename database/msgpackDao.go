@@ -34,66 +34,6 @@ func QueryAll() (*models.Package, error) {
 	return &item, nil
 }
 
-func InsertBrook(brook *models.Brook) error {
-	p, err := QueryAll()
-	if err != nil {
-		fmt.Println(err)
-	}
-	p.Brooks = append(p.Brooks, *brook)
-	err = Marshal(p)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func RemoveBrook(originUrl string) error {
-	p, err := QueryAll()
-	if err != nil {
-		return err
-	}
-	var index = -1
-	for i := 0; i < len(p.Brooks); i++ {
-		brook := p.Brooks[i]
-		if originUrl == brook.OriginUrl {
-			index = i
-			break
-		}
-	}
-	if index >= 0 {
-		p.Brooks = append(p.Brooks[:index], p.Brooks[index+1:]...)
-	}
-	err = Marshal(p)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func UpdateBrook(model *models.Brook) error {
-	p, err := QueryAll()
-	if err != nil {
-		return err
-	}
-	var index = -1
-	for i := 0; i < len(p.Brooks); i++ {
-		brook := p.Brooks[i]
-		if model.OriginUrl == brook.OriginUrl {
-			index = i
-			break
-		}
-	}
-	if index >= 0 {
-		p.Brooks = append(p.Brooks[:index], p.Brooks[index+1:]...)
-	}
-	p.Brooks = append(p.Brooks, *model)
-	err = Marshal(p)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func InsertProfileToMsgpack(profile *models.Profile) error {
 	p, err := QueryAll()
 	if err != nil {
@@ -120,6 +60,7 @@ func RemoveProfileFromMsgpack(originUrl string) error {
 			break
 		}
 	}
+	fmt.Printf("originUrl:%s index:%d\n", originUrl, index)
 	if index >= 0 {
 		p.Profiles = append(p.Profiles[:index], p.Profiles[index+1:]...)
 	}

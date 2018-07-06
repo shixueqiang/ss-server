@@ -38,7 +38,7 @@ type Brook struct {
 }
 
 type Package struct {
-	Brooks   []Brook
+	// Brooks []Brook
 	Profiles []Profile
 }
 
@@ -47,4 +47,16 @@ type User struct {
 	Name     string
 	Account  string
 	Password string
+}
+
+func (brook *Brook) ToProfile() *Profile {
+	profile := new(Profile)
+	profile.OriginUrl = brook.OriginUrl
+	profile.Name = brook.Name
+	profile.VpnType = 2
+	profile.BrookType = brook.BrookType
+	profile.Host = brook.IP
+	profile.RemotePort = brook.Port
+	profile.Password = brook.Password
+	return profile
 }
